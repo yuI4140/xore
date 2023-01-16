@@ -13,9 +13,11 @@
 #### functions inside stdlib.h
 **Functionality**:*computes absolute value of an integral value (|x|)*
 
-    -**abs**
-    -**labs**
-    -**llabs**
+
+    -abs
+    -labs
+    -llabs
+
 
 ##### Defined in Header <math.h>
 - **Basic operations** 
