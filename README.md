@@ -27,3 +27,6 @@
 - **Hyperbolic functions** 
 - **Error and gamma functions**
 - **Nearest integer floating-point operations**
+- **Floating-point manipulation functions**
+- **Classification and comparison**
+- **Types**(like Matrix or functions)
