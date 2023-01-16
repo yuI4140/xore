@@ -11,7 +11,7 @@
 **learn more c++ and math also have a math header that doesn't load dependencies only from iostream and some core but nothing from <any,stdlib,algorithm,math.h> at first I may use math.h to test some things but I will remove it.**
 ### Future Implementations
 #### functions inside stdlib.h
-**Functionality***:computes absolute value of an integral value (|x|)*.
+**Functionality**:*computes absolute value of an integral value (|x|)*.
     -**abs**
     -**labs**
     -**llabs**
