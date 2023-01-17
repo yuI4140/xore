@@ -1,5 +1,4 @@
-# Math++
-*a.hpp which will have everything that can be done with math.h, but improved and with modern C++*.
+# Core
 ### Usage
 *download it from **github.com/** or do a git clone 
 
@@ -8,8 +7,4 @@
 ```
 *and include in your project.*
 ### Purpose of the Project
-**Make a class of types that help the development..**
-### Future Implementations
--  **Algebra**
-- **Geometry**
-- **Arithmetic**
+**Make a class of types that help the development.**
