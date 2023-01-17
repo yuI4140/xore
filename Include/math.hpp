@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <math.h>
+#include <algorithm>
+#include <cmath>
 #include <initializer_list>
 namespace math {
     class Matrix {
