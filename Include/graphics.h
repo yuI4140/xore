@@ -62,14 +62,14 @@ namespace gc
          "#01579bl","#80d8ff","#40c4ff",
          "#00b0ffl3","#0091ea"
         };
-        // from here to below are not set
         std::array<std::string, 14> mh_Cyan = {
-        "#fce4ec","f8bbd0","f48fb1",
-        "#f06292","#ec407a","#e91e63",
-        "#d81b60","#c2185b","#ad1457",
-         "#880e4f","#ff80ab","#ff4081",
-         "#f50057","#c51162"
+        "#e0f7fa","#b2ebf2","#80deea",
+        "#4dd0e1","#26c6da","#00bcd4",
+        "##00acc1","#0097a7","#00838f",
+         "#006064","#84ffff","#18ffff",
+         "#00e5ff","#00b8d4"
         };
+        // from here to below are not set
         std::array<std::string, 14> mh_Teal = {
         "#fce4ec","f8bbd0","f48fb1",
         "#f06292","#ec407a","#e91e63",
