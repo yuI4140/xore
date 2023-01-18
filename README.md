@@ -1,4 +1,4 @@
-# Xore
+[Xore](./xore.png)
 **Multipurpose library.**
 ### Usage
 *download it from **github.com/** or do a git clone 
