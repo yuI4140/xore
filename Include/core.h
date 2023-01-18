@@ -163,15 +163,14 @@ namespace core {
          {"p9","#4a148c"},{"p10","#ea80fc"},{"p11","#e040fb"},
          {"p12","#d500f9"},{"p13","#aa00ff"}
         };
-        // from here to below are not set
-        // dp is done up to dp3
         std::unordered_map<std::string, std::string> mh_deepPurple = {
         {"dp0","#ede7f6"},{"dp1","#d1c4e9"},{"dp2","#b39ddb"},
-        {"dp3","#9575cd"},{"dp4","#ec407a"},{"dp5","#e91e63"},
-        {"dp6","#d81b60"},{"dp7","#c2185b"},{"dp8","#ad1457"},
-         {"dp9","#880e4f"},{"dp10","#ff80ab"},{"dp11","#ff4081"},
-         {"dp12","#f50057"},{"dp13","#c51162"}
+        {"dp3","#9575cd"},{"dp4","#7e57c2"},{"dp5","#673ab7"},
+        {"dp6","#5e35b1"},{"dp7","#512da8"},{"dp8","#4527a0"},
+         {"dp9","#311b92"},{"dp10","#b388ff"},{"dp11","#7c4dff"},
+         {"dp12","#651fff"},{"dp13","#6200ea"}
         };
+        // from here to below are not set
         std::unordered_map<std::string, std::string> mh_Indigo = {
         {"p0","#fce4ec"},{"p1","f8bbd0"},{"p2","f48fb1"},
         {"p3","#f06292"},{"p4","#ec407a"},{"p5","#e91e63"},
