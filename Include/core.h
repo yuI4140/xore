@@ -147,17 +147,24 @@ namespace core {
     }
     class xchar {
     public:
+    // costructors
         xchar(): data("\x00") {}
         xchar(const char* ch): data(ch) {}
-        const char* remove(int index) {
+        xchar(int i) {
+        // TODO: implement of xchar to support integer
+        }
+            // remove a character of xchar
+            const char* remove(int index) {
             if (index < 0 || index > strlen(data)) return data;
             std::string str(data);
             str.erase(index, 1);
             return str.c_str();
         }
+        // return the begin of xchar
         const char* begin() {
             return data;
         }
+        // length of the xchar
         size_t charlen(const char* str) {
             size_t length = 0;
             while (*str++) {
@@ -165,6 +172,7 @@ namespace core {
             }
             return length;
         }
+        // override '+' operator for concatenation of xchars
         template<typename... Args>
         xchar operator+(const Args&... args) const {
             std::string result = std::string(data);
@@ -181,6 +189,7 @@ namespace core {
             newString += rhs;
             return xchar(newString.c_str());
         }
+        // returns the end of the xchar
         const char* end() {
             return data + strlen(data);
         }
