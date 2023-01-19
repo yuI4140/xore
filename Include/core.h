@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <cstring>
 #include <algorithm>
 #include <cmath>
 #include <fstream>
@@ -156,6 +157,13 @@ namespace core {
         }
         const char* begin() {
             return data;
+        }
+        size_t charlen(const char* str) {
+            size_t length = 0;
+            while (*str++) {
+                length++;
+            }
+            return length;
         }
         template<typename... Args>
         xchar operator+(const Args&... args) const {
