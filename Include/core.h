@@ -144,4 +144,39 @@ namespace core {
             std::cerr << e.what() << std::endl;
         }
     }
-};
+    class xchar {
+    public:
+        xchar(): data("\x00") {}
+        xchar(const char* ch): data(ch) {}
+        const char* remove(int index) {
+            if (index < 0 || index > strlen(data)) return data;
+            std::string str(data);
+            str.erase(index, 1);
+            return str.c_str();
+        }
+        const char* begin() {
+            return data;
+        }
+        template<typename... Args>
+        xchar operator+(const Args&... args) const {
+            std::string result = std::string(data);
+            (result += ... += std::string(args.data));
+            return xchar(result.c_str());
+        }
+        xchar operator+(const xchar& rhs) const {
+            std::string newString = data;
+            newString += rhs.data;
+            return xchar(newString.c_str());
+        }
+        xchar operator+(const char* rhs) const {
+            std::string newString = data;
+            newString += rhs;
+            return xchar(newString.c_str());
+        }
+        const char* end() {
+            return data + strlen(data);
+        }
+    private:
+        const char* data;
+    };
+}
