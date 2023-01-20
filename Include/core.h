@@ -9,9 +9,10 @@
 #include <unordered_map>
 #include <initializer_list>
 namespace core {
+    // a matrix dataType that replace the classic C-style matrix
     class Matrix {
     public:
-        // matri constructor
+        // matrix constructor
         Matrix():rows(2), cols(2) { data = new double* [rows]; }
         Matrix(int rows, int cols, int matrix[][2]): rows(rows), cols(cols) {
             data = new double* [rows];
