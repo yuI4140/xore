@@ -11,5 +11,28 @@
 ### xchar class
 *class that serves as an alternative to the built-in (const char) data type offering a variety of functions* *and transformations for (const char) and (char) data typess.*
 #### Example:
-![Examples](example.png)
+```cpp
+using xch=core::xchar;
+xch var="Ex";
+    xch array[5]={"hello",var,"world",5,std::string("hello world")};
+    for (int i=0; i<4;++i){
+        std::cout <<array[i] << std::endl;
+    }
+```
 ### Matrix class
+*A matrix dataType that replace the classic C-style matrix*
+#### Example:
+```cpp
+using Matrix=core::Matrix;
+Matrix var1={
+  {1,2,4},{1,2,5},{1,6,7},{11,3,43,5}
+  };
+var1.priint();
+```
+## FAQ
+#### can xchar support differents data types?
+*Yes. It supports*:
+- **int**
+- **std::string**
+- **char**
+- **const char**
