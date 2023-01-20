@@ -171,6 +171,11 @@ namespace core {
         xchar(): data("\x00") {}
         // overload the constructor for support const char* dataType
         xchar(const char* ch): data(ch) {}
+        // move assignment operator
+        xchar& operator=(xchar&& other) noexcept {
+            data = std::move(other.data);
+            return *this;
+        }
         // overload the constructor for support int dataType
         xchar(int i) {
             char buffer[10];
@@ -262,6 +267,14 @@ namespace core {
         temp[len] = '\0';
         data = temp;
         delete[] temp;
+    }
+     // substr function
+    xchar substr(size_t start, size_t length) {
+        if (start + length > strlen(data)) return xchar("");
+        char* temp = new char[length + 1];
+        strncpy(temp, data + start, length);
+        temp[length] = '\0';
+        return xchar(temp);
     }
     private:
         const char* data;
