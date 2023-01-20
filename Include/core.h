@@ -304,19 +304,19 @@ namespace core {
         return val;
     }
     // insert from xchar
-    void xinsert(int pos,xchar xdata){
-        xchar temp0=data;
-        char* temp=temp0.xcchar();
-        temp[pos]+=(char)xdata.data;
-        data=temp;
+    void xinsert(int pos, const xchar& xdata) {
+    int len = charlen(data);
+    char* temp = new char[len + 2]; // + 2 to account for the additional character and the null terminator
+    for (int i = 0; i < pos; i++) {
+        temp[i] = data[i];
     }
-    // insert from const char*
-    void insert(int pos,const char* xdata){
-        xchar temp0=data;xchar xtemp=xdata;
-        char* temp=temp0.xcchar();
-        temp[pos]+=(char)xtemp.data;
-        data=temp;
+    temp[pos] = xdata.data[0];
+    for (int i = pos + 1; i <= len; i++) {
+        temp[i] = data[i - 1];
     }
+    data = temp;
+    delete[] temp;
+}
     private:
         const char* data;
     };
