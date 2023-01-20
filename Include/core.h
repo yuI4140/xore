@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <sstream>
+#include <regex>
 #include <cstring>
 #include <algorithm>
 #include <cmath>
@@ -157,14 +158,9 @@ namespace core {
             std::cerr << e.what() << std::endl;
         }
     }
-    //A class that serves as an alternative to the built-in const char* 
-    //data type, offering a variety of functions and transformations for
-    // const char* and char* data types. This class can be used to manipulate
-    //and operate on string data with more flexibility and efficiency. 
-    //It also provides a more user-friendly interface for working with strings 
-    //and characters. Additionally, this class has built-in memory management 
-    //and error handling capabilities, making it a safer option 
-    //for string manipulation in comparison to using raw pointers.
+    //class that serves as an alternative to the built-in const char* 
+    //data type offering a variety of functions and transformations 
+    //for const char* and char* data typess.
     class xchar {
     public:
         // costructor
@@ -214,7 +210,7 @@ namespace core {
         const char* begin() {
             return data;
         }
-        // length of the xchar
+        // get the length of a const char*
         size_t charlen(const char* str) {
             size_t length = 0;
             while (*str++) {
@@ -222,8 +218,16 @@ namespace core {
             }
             return length;
         }
-        // override '+' operator for concatenation of xchars
+        // get the length of the direct from xchar
+        size_t xcharlen() {
+            size_t length = 0;
+            while (*data++) {
+                length++;
+            }
+            return length;
+        }
         template<typename... Args>
+        // override '+' operator for concatenation of xchars
         xchar operator+(const Args&... args) const {
             std::string result = std::string(data);
             (result += ... += std::string(args.data));
@@ -244,7 +248,7 @@ namespace core {
             return data + strlen(data);
         }
         // transform xchar to char
-        char* Xcchar() {
+        char* xcchar() {
             int len = charlen(data);
             char* cstr = new char[len + 1];
             strncpy(cstr, data, len);
@@ -266,23 +270,52 @@ namespace core {
             return str;
         }
         // replace a character with another character 
-        void replace(const char* new_data) {
-        int len = charlen(data);
-        char* temp = new char[len + 1];
-        for (int i = 0; i < len; i++) {
-            temp[i] = data[i];
+        void replace(int pos,const char* willfind,const char* _new) {
+        xchar temp=data;
+        if(xchar::find(willfind)){
+            temp[pos]=(char)xchar::to_char(_new);
+            data=temp.xcchar();
         }
-        temp[len] = '\0';
-        data = temp;
-        delete[] temp;
-    }
-     // substr function
-    xchar substr(size_t start, size_t length) {
+        else{
+            std::cerr<<"Error: not found: "<<willfind;
+        }
+    }   
+    // find a const char* into data
+    bool find(const char* regex) {
+            std::regex pattern(regex);
+            std::cmatch match;
+            if (std::regex_search(data, match, pattern)) {
+                return true;
+            }
+            return false;
+        }
+     //  remove a character from original xchar
+    xchar subxchar(size_t start, size_t length) {
         if (start + length > strlen(data)) return xchar("");
         char* temp = new char[length + 1];
         strncpy(temp, data + start, length);
         temp[length] = '\0';
         return xchar(temp);
+    }
+    // override the operator '[]' for modify the string
+     char& operator[](size_t index) {
+        if(index >= strlen(data)) throw std::out_of_range("Index out of range");
+        auto val=data[index];
+        return val;
+    }
+    // insert from xchar
+    void xinsert(int pos,xchar xdata){
+        xchar temp0=data;
+        char* temp=temp0.xcchar();
+        temp[pos]+=(char)xdata.data;
+        data=temp;
+    }
+    // insert from const char*
+    void insert(int pos,const char* xdata){
+        xchar temp0=data;xchar xtemp=xdata;
+        char* temp=temp0.xcchar();
+        temp[pos]+=(char)xtemp.data;
+        data=temp;
     }
     private:
         const char* data;
