@@ -1,7 +1,7 @@
 ![Xore](xore.png)
 ## what's the library about?
 **It's a multipurpose library.**
-**see [Features](#Features) for know what has got the library!**
+**see [features](#Features) for know what has got the library!**
 ### Usage
 download it from **github.com/** or do a git clone 
 
