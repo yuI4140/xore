@@ -1,7 +1,9 @@
 ![Xore](xore.png)
-**Multipurpose library.**
+## what's the library about?
+**It's a multipurpose library.**
+**see [Features](#Features) for know what has got the library!**
 ### Usage
-*download it from **github.com/** or do a git clone 
+download it from **github.com/** or do a git clone 
 
 ```bat
   git clone --recursive https://github.com/yuI4140/xore.git 
@@ -32,7 +34,9 @@ var1.priint();
 ## FAQ
 #### can xchar support differents data types?
 *Yes. It supports*:
-- **int**
 - **std::string**
 - **char**
 - **const char**
+- **also suppports int but it's not stable yet.(01-20-2023)**
+## Documentation and futures features
+**TODO!**
