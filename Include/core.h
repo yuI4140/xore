@@ -169,6 +169,14 @@ namespace core {
     public:
         // costructor
         xchar(): data("\x00") {}
+          xchar(const xchar& other) {
+        int len = charlen(other.data);
+        auto tdata = new char[len + 1];
+        strncpy(tdata, other.data, len);
+        tdata[len] = '\0';
+        data=tdata;
+    }
+        xchar(std::string str): data(str.c_str()) {}
         // overload the constructor for support const char* dataType
         xchar(const char* ch): data(ch) {}
         // move assignment operator
