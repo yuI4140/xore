@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <sstream>
 #include <cstring>
 #include <algorithm>
 #include <cmath>
@@ -10,6 +11,7 @@
 namespace core {
     class Matrix {
     public:
+        // matri constructor
         Matrix():rows(2), cols(2) { data = new double* [rows]; }
         Matrix(int rows, int cols, int matrix[][2]): rows(rows), cols(cols) {
             data = new double* [rows];
@@ -19,12 +21,14 @@ namespace core {
                     data[i][j] = matrix[i][j];
             }
         }
+        // overloading the matrix constructor
         Matrix(int rows, int cols): rows(rows), cols(cols) {
             data = new double* [rows];
             for (int i = 0; i < rows; i++) {
                 data[i] = new double[cols];
             }
         }
+        // print matrix 
         void print() const {
             if (data != nullptr) {
                 for (int i = 0; i < rows; i++) {
@@ -38,6 +42,7 @@ namespace core {
                 std::cerr << "Error:Data pointers is empty or null " << "\n";
             }
         }
+        // overloading matrix construction with initializer_list
         Matrix(std::initializer_list<std::initializer_list<double>> lst):
             rows(lst.size()), cols(lst.begin()->size()) {
             data = new double* [rows];
@@ -62,23 +67,23 @@ namespace core {
             }
             delete[] data;
         }
-
+        // get rows
         int getRows() const {
             return rows;
         }
-
+        // get columns
         int getCols() const {
             return cols;
         }
-
+        // get total data of matrix
         double get(int row, int col) const {
             return data[row][col];
         }
-
+        // set the total data of matrix
         void set(int row, int col, double value) {
             data[row][col] = value;
         }
-
+        // fill the matrix with values
         void fill(double value) {
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
@@ -86,9 +91,12 @@ namespace core {
                 }
             }
         }
+        // get the max of matrix
+        // the max of matrix is the sum of rows and cols
         int getMaxn() {
             return MAXN;
         }
+        // get the current data of matrix
         std::vector<std::vector<double>> getData() const {
             std::vector<std::vector<double>> res(rows, std::vector<double>(cols));
             for (int i = 0; i < rows; i++) {
@@ -98,12 +106,15 @@ namespace core {
             }
             return res;
         }
+        // override the '[]' operator for support matrix indexing
         double* operator[](int row) {
             return data[row];
         }
+        // override (with const)the '[]' operator for support matrix indexing
         const double* operator[](int row) const {
             return data[row];
         }
+        // inverse the matrix 
         Matrix inverse() {
             if (getRows() != 2 || getCols() != 2) {
                 throw std::invalid_argument("Error: This function is only for 2x2 matrices");
@@ -145,16 +156,36 @@ namespace core {
             std::cerr << e.what() << std::endl;
         }
     }
+    // a class that replace the const char* dataType
+    // has functions and transforms for const char* dataType
+    // and char* dataType as well.
     class xchar {
     public:
-    // costructors
+        // costructor
         xchar(): data("\x00") {}
+        // overload the constructor for support const char* dataType
         xchar(const char* ch): data(ch) {}
+        // overload the constructor for support int dataType
         xchar(int i) {
-        // TODO: implement of xchar to support integer
+            char buffer[10];
+            snprintf(buffer, sizeof(buffer), "%d", i);
+            data = buffer;
         }
-            // remove a character of xchar
-            const char* remove(int index) {
+        // support '<<' operator
+        friend std::ostream& operator<<(std::ostream& os, const xchar& xc) {
+            os << xc.data;
+            return os;
+        }
+        // support '>>' operator
+        friend std::istream& operator>>(std::istream& is, xchar& xc) {
+            std::string temp;
+            is >> temp;
+            xc.data = new char[temp.length() + 1];
+            std::strcpy(xc.to_char(xc.data), temp.c_str());
+            return is;
+        }
+        // remove a character of xchar
+        const char* remove(int index) {
             if (index < 0 || index > strlen(data)) return data;
             std::string str(data);
             str.erase(index, 1);
@@ -192,6 +223,28 @@ namespace core {
         // returns the end of the xchar
         const char* end() {
             return data + strlen(data);
+        }
+        // transform xchar to char
+        char* Xcchar() {
+            int len = charlen(data);
+            char* cstr = new char[len + 1];
+            strncpy(cstr, data, len);
+            cstr[len] = '\0';
+            return cstr;
+        }//transform xchar to char(with param)
+        char* Xcchar(xchar& xc) {
+            int len = charlen(xc.data);
+            char* cstr = new char[len + 1];
+            strncpy(cstr, xc.data, len);
+            cstr[len] = '\0';
+            return cstr;
+        }
+        // const char* to char*
+        char* to_char(const char* c_str) {
+            int len = strlen(c_str);
+            char* str = new char[len + 1];
+            strcpy(str, c_str);
+            return str;
         }
     private:
         const char* data;
