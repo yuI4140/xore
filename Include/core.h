@@ -165,13 +165,13 @@ namespace core {
     public:
         // costructor
         xchar(): data("\x00") {}
-          xchar(const xchar& other) {
-        int len = charlen(other.data);
-        auto tdata = new char[len + 1];
-        strncpy(tdata, other.data, len);
-        tdata[len] = '\0';
-        data=tdata;
-    }
+        xchar(const xchar& other) {
+            int len = charlen(other.data);
+            auto tdata = new char[len + 1];
+            strncpy(tdata, other.data, len);
+            tdata[len] = '\0';
+            data = tdata;
+        }
         xchar(std::string str): data(str.c_str()) {}
         // overload the constructor for support const char* dataType
         xchar(const char* ch): data(ch) {}
@@ -270,18 +270,29 @@ namespace core {
             return str;
         }
         // replace a character with another character 
-        void replace(int pos,const char* willfind,const char* _new) {
-        xchar temp=data;
-        if(xchar::find(willfind)){
-            temp[pos]=(char)xchar::to_char(_new);
-            data=temp.xcchar();
+        void replace(const char* willfind, const char* _new) {
+            size_t find_length = strlen(willfind);
+            size_t new_length = strlen(_new);
+            char* temp = new char[charlen(data) + 1];
+            strcpy(temp, data);
+            char* found = strstr(temp, willfind);
+            if (found) {
+                if (find_length < new_length) {
+                    // Move the trailing characters to make room for the new string
+                    size_t trailing_length = strlen(found + find_length);
+                    memmove(found + new_length, found + find_length, trailing_length + 1);
+                }
+                // Copy the new string into the found location
+                memcpy(found, _new, new_length);
+                data = temp;
+            }
+            else {
+                std::cerr << "Error: " << willfind << " not found in " << temp << std::endl;
+                delete[] temp;
+            }
         }
-        else{
-            std::cerr<<"Error: not found: "<<willfind;
-        }
-    }   
-    // find a const char* into data
-    bool find(const char* regex) {
+        // find a const char* into data
+        bool find(const char* regex) {
             std::regex pattern(regex);
             std::cmatch match;
             if (std::regex_search(data, match, pattern)) {
@@ -289,34 +300,34 @@ namespace core {
             }
             return false;
         }
-     //  remove a character from original xchar
-    xchar subxchar(size_t start, size_t length) {
-        if (start + length > strlen(data)) return xchar("");
-        char* temp = new char[length + 1];
-        strncpy(temp, data + start, length);
-        temp[length] = '\0';
-        return xchar(temp);
-    }
-    // override the operator '[]' for modify the string
-     char& operator[](size_t index) {
-        if(index >= strlen(data)) throw std::out_of_range("Index out of range");
-        auto val=data[index];
-        return val;
-    }
-    // insert from xchar
-    void xinsert(int pos, const xchar& xdata) {
-    int len = charlen(data);
-    char* temp = new char[len + 2]; // + 2 to account for the additional character and the null terminator
-    for (int i = 0; i < pos; i++) {
-        temp[i] = data[i];
-    }
-    temp[pos] = xdata.data[0];
-    for (int i = pos + 1; i <= len; i++) {
-        temp[i] = data[i - 1];
-    }
-    data = temp;
-    delete[] temp;
-}
+        //  remove a character from original xchar
+        xchar subxchar(size_t start, size_t length) {
+            if (start + length > strlen(data)) return xchar("");
+            char* temp = new char[length + 1];
+            strncpy(temp, data + start, length);
+            temp[length] = '\0';
+            return xchar(temp);
+        }
+        // override the operator '[]' for modify the string
+        char& operator[](size_t index) {
+            if (index >= strlen(data)) throw std::out_of_range("Index out of range");
+            auto val = data[index];
+            return val;
+        }
+        // insert from xchar
+        void xinsert(int pos, const xchar& xdata) {
+            int len = charlen(data);
+            char* temp = new char[len + 2]; // + 2 to account for the additional character and the null terminator
+            for (int i = 0; i < pos; i++) {
+                temp[i] = data[i];
+            }
+            temp[pos] = xdata.data[0];
+            for (int i = pos + 1; i <= len; i++) {
+                temp[i] = data[i - 1];
+            }
+            data = temp;
+            delete[] temp;
+        }
     private:
         const char* data;
     };
