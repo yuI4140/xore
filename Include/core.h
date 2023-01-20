@@ -271,23 +271,41 @@ namespace core {
         }
         // replace a character with another character 
         void replace(const char* willfind, const char* _new) {
-            size_t find_length = strlen(willfind);
-            size_t new_length = strlen(_new);
-            char* temp = new char[charlen(data) + 1];
-            strcpy(temp, data);
-            char* found = strstr(temp, willfind);
-            if (found) {
-                if (find_length < new_length) {
-                    // Move the trailing characters to make room for the new string
-                    size_t trailing_length = strlen(found + find_length);
-                    memmove(found + new_length, found + find_length, trailing_length + 1);
+            // Find the length of the data and the strings to find and replace
+            size_t data_len = charlen(data);
+            size_t find_len = charlen(willfind);
+            size_t new_len = charlen(_new);
+            // Allocate memory for the new string and initialize it with the current data
+            char* temp = new char[data_len + 1];
+            strncpy(temp, data, data_len);
+            temp[data_len] = '\0';
+            // Find the first occurrence of the string to find
+            char* occurence = strstr(temp, willfind);
+            if (occurence != nullptr) {
+                // Calculate the number of characters to shift and the new length of the string
+                size_t shift = new_len - find_len;
+                size_t new_data_len = data_len + shift;
+                // Shift the remaining characters to the right or left as necessary
+                if (shift > 0) {
+                    for (int i = data_len - 1; i >= (occurence - temp) + find_len; i--) {
+                        temp[i + shift] = temp[i];
+                    }
                 }
-                // Copy the new string into the found location
-                memcpy(found, _new, new_length);
+                else if (shift < 0) {
+                    for (int i = (occurence - temp) + find_len; i < data_len; i++) {
+                        temp[i + shift] = temp[i];
+                    }
+                }
+                // Replace the string
+                for (int i = 0; i < new_len; i++) {
+                    temp[(occurence - temp) + i] = _new[i];
+                }
+                // Update the data member and deallocate the old memory
                 data = temp;
             }
             else {
-                std::cerr << "Error: " << willfind << " not found in " << temp << std::endl;
+                // If the string is not found, show an error message
+                std::cerr << "Error: string " << willfind << " not found in xchar data" << std::endl;
                 delete[] temp;
             }
         }
