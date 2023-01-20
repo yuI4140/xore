@@ -309,10 +309,15 @@ namespace core {
             return xchar(temp);
         }
         // override the operator '[]' for modify the string
-        char& operator[](size_t index) {
-            if (index >= strlen(data)) throw std::out_of_range("Index out of range");
-            auto val = data[index];
-            return val;
+        std::unique_ptr<char[]> operator[](size_t index) {
+            if (index >= charlen(data)) {
+                throw std::out_of_range("Index out of range");
+            }
+            else {
+                std::unique_ptr<char[]> val(new char[1]);
+                val[0] = data[index];
+                return val;
+            }
         }
         // insert from xchar
         void xinsert(int pos, const xchar& xdata) {
