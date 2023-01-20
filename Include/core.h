@@ -157,9 +157,14 @@ namespace core {
             std::cerr << e.what() << std::endl;
         }
     }
-    // a class that replace the const char* dataType
-    // has functions and transforms for const char* dataType
-    // and char* dataType as well.
+    //A class that serves as an alternative to the built-in const char* 
+    //data type, offering a variety of functions and transformations for
+    // const char* and char* data types. This class can be used to manipulate
+    //and operate on string data with more flexibility and efficiency. 
+    //It also provides a more user-friendly interface for working with strings 
+    //and characters. Additionally, this class has built-in memory management 
+    //and error handling capabilities, making it a safer option 
+    //for string manipulation in comparison to using raw pointers.
     class xchar {
     public:
         // costructor
@@ -247,6 +252,17 @@ namespace core {
             strcpy(str, c_str);
             return str;
         }
+        // replace a character with another character 
+        void replace(const char* new_data) {
+        int len = charlen(data);
+        char* temp = new char[len + 1];
+        for (int i = 0; i < len; i++) {
+            temp[i] = data[i];
+        }
+        temp[len] = '\0';
+        data = temp;
+        delete[] temp;
+    }
     private:
         const char* data;
     };
