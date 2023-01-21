@@ -243,6 +243,8 @@ namespace core {
             newString += rhs;
             return xchar(newString.c_str());
         }
+        // get the data/to const char* with noexcept
+        const char* to_cchar()const noexcept { return data; }
         // returns the end of the xchar
         const char* end() {
             return data + strlen(data);
@@ -255,7 +257,7 @@ namespace core {
             cstr[len] = '\0';
             return cstr;
         }//transform xchar to char(with param)
-        char* Xcchar(xchar& xc) {
+        char* xcchar(xchar& xc) {
             int len = charlen(xc.data);
             char* cstr = new char[len + 1];
             strncpy(cstr, xc.data, len);
@@ -263,18 +265,16 @@ namespace core {
             return cstr;
         }
         // const char* to char*
-        char* to_char(const char* c_str) {
+        char* to_char(const char* c_str) noexcept{
             int len = strlen(c_str);
             char* str = new char[len + 1];
             strcpy(str, c_str);
             return str;
         }
         // transform xchar to string
-        std::string to_string() {
+        std::string to_string() noexcept {
             std::string str = data;
         }
-        // replace a character with another character 
-
         // apend const char* to a specific index of the current xchar object's data
         void append(const char* str, int index) {
             if (index < 0 || index > charlen(data)) return;
@@ -348,7 +348,7 @@ namespace core {
             xchar xdata = data;
             xchar xsearch = SEARCH;
             for (size_t i = 0; i < xdata.xcharlen(); i++) {
-                if (xdata.data[i] == xsearch) {
+                if (xdata.data[i] == xsearch.data[i]) {
                     return i;
                 }
             }
@@ -398,5 +398,6 @@ namespace core {
         }
     private:
         const char* data;
+        
     };
 }
