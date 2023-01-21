@@ -274,6 +274,7 @@ namespace core {
         // transform xchar to string
         std::string to_string() noexcept {
             std::string str = data;
+            return str;
         }
         // apend const char* to a specific index of the current xchar object's data
         void append(const char* str, int index) {
