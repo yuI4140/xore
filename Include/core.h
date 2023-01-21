@@ -342,6 +342,7 @@ namespace core {
 
             // Delete the old data and set the data to the new modified data
             delete[] data;
+            data = new_data;
         }
         // find the length of 'X' in the xchar data
         size_t find_len_of(const char* SEARCH) {
