@@ -269,45 +269,90 @@ namespace core {
             strcpy(str, c_str);
             return str;
         }
+        // transform xchar to string
+        std::string to_string() {
+            std::string str = data;
+        }
         // replace a character with another character 
+
+        // apend const char* to a specific index of the current xchar object's data
+        void append(const char* str, int index) {
+            if (index < 0 || index > charlen(data)) return;
+            int len = charlen(str);
+            int lenData = charlen(data);
+            char* temp = new char[lenData + len + 1];
+            strncpy(temp, data, index);
+            strncpy(temp + index, str, len);
+            strncpy(temp + index + len, data + index, lenData - index);
+            temp[lenData + len] = '\0';
+            data = temp;
+        }
+        // transform xchar to const char*
+        const char* xconstchar() const {
+            return data;
+        }
+        bool operator==(const xchar& rhs) const {
+            return strcmp(data, rhs.data) == 0;
+        }
+        bool operator==(const char* rhs) const {
+            return strcmp(data, rhs) == 0;
+        }
         void replace(const char* willfind, const char* _new) {
-            // Find the length of the data and the strings to find and replace
-            size_t data_len = charlen(data);
-            size_t find_len = charlen(willfind);
-            size_t new_len = charlen(_new);
-            // Allocate memory for the new string and initialize it with the current data
-            char* temp = new char[data_len + 1];
-            strncpy(temp, data, data_len);
-            temp[data_len] = '\0';
-            // Find the first occurrence of the string to find
-            char* occurence = strstr(temp, willfind);
-            if (occurence != nullptr) {
-                // Calculate the number of characters to shift and the new length of the string
-                size_t shift = new_len - find_len;
-                size_t new_data_len = data_len + shift;
-                // Shift the remaining characters to the right or left as necessary
-                if (shift > 0) {
-                    for (int i = data_len - 1; i >= (occurence - temp) + find_len; i--) {
-                        temp[i + shift] = temp[i];
-                    }
-                }
-                else if (shift < 0) {
-                    for (int i = (occurence - temp) + find_len; i < data_len; i++) {
-                        temp[i + shift] = temp[i];
-                    }
-                }
-                // Replace the string
-                for (int i = 0; i < new_len; i++) {
-                    temp[(occurence - temp) + i] = _new[i];
-                }
-                // Update the data member and deallocate the old memory
-                data = temp;
+            // Check if the input is valid
+            if (willfind == nullptr || _new == nullptr) {
+                std::cerr << "Error: Invalid input for replace()" << std::endl;
+                return;
             }
-            else {
-                // If the string is not found, show an error message
-                std::cerr << "Error: string " << willfind << " not found in xchar data" << std::endl;
-                delete[] temp;
+
+            // Calculate the length of the old and new strings
+            size_t oldlen = strlen(willfind);
+            size_t newlen = strlen(_new);
+
+            // Find the location of the old string in the data
+            const char* found = std::strstr(data, willfind);
+            if (found == nullptr) {
+                std::cerr << "Error: String '" << willfind << "' not found in the data" << std::endl;
+                return;
             }
+
+            // Create a new char array to store the modified data
+            char* new_data = new char[strlen(data) - oldlen + newlen + 1];
+            char* current = new_data;
+
+            // Copy the data before the found old string
+            const char* before = data;
+            while (before != found) {
+                *current++ = *before++;
+            }
+
+            // Copy the new string
+            for (size_t i = 0; i < newlen; i++) {
+                *current++ = _new[i];
+            }
+
+            // Copy the data after the found old string
+            const char* after = found + oldlen;
+            while (*after) {
+                *current++ = *after++;
+            }
+
+            // Add null terminator
+            *current = '\0';
+
+            // Delete the old data and set the data to the new modified data
+            delete[] data;
+        }
+        // find the length of 'X' in the xchar data
+        size_t find_len_of(const char* SEARCH) {
+            size_t len = 0;
+            xchar xdata = data;
+            xchar xsearch = SEARCH;
+            for (size_t i = 0; i < xdata.xcharlen(); i++) {
+                if (xdata.data[i] == xsearch) {
+                    return i;
+                }
+            }
+            return -1;
         }
         // find a const char* into data
         bool find(const char* regex) {
