@@ -11,7 +11,10 @@ download it from **github.com/** or do a git clone
 *and include in your project.*
 ## features ↹↔
 ### xchar class
-*class that serves as an alternative to the built-in (const char) data type offering a variety of functions* *and transformations for (const char) and (char) data typess.*
+*class that serves as an alternative to the built-in (const char) data type offering a variety of functions and transformations for*:
+- xchar to char*
+- const char* to char
+- xchar to std::string
 #### Example:
 ```cpp
 using xch=core::xchar;
