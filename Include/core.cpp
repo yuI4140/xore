@@ -399,7 +399,10 @@ namespace core {
             delete[] temp;
         }
     private:
-        const char* data;
+        const char* data;  
+    };
+    class fera{
+
         
     };
 }
