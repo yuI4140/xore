@@ -164,7 +164,8 @@ namespace core {
     class xchar {
     public:
         // costructor
-        xchar(): data("\x00") {}
+        xchar(): _data(std::make_unique<const char*>('\x00')) {}
+
         xchar(const xchar& other) {
             // Get the length of the data from the other xchar
             size_t len = charlen(other._data.get());
@@ -173,42 +174,29 @@ namespace core {
             // Copy the data from the other xchar
             charncpy(new_data.get(), other._data.get(), len);
             // Add null terminator
-            xchar xd1=new_data.get();
-            xd1[len] = '\0';
+            xchar xd1(new_data.get());
             // Move the new data into the unique_ptr
-            _data = std::move(xd1);
+            _data = std::move(xd1._data);
         }
-          xchar& operator=(const xchar& other) {
-        // Get the length of the data from the other xchar
-        size_t len = charlen(other._data.get());
-        // Allocate memory for the new data
-        auto new_data = std::make_unique<const char*>(new char[len + 1]);
-        // Copy the data from the other xchar
-        charncpy(new_data.get(), other._data.get(), len);
-        // Add null terminator
-        new_data.get()[len] = '\0';
-        // Move the new data into the unique_ptr
-        _data = std::move(new_data);
-        return *this;
-    }
         void charncpy(const char* src, const char** dest, size_t n) {
             // Allocate memory for the new data
             *dest = new char[n + 1];
             // Copy the data from the source
-            std::strncpy(*dest, src, n);
+            std::strncpy(to_char(*dest), src, n);
             // Add null terminator
-            (*dest)[n] = '\0';
+            dest[n] = '\0';
         }
         void charncpy(char* dest, const char* src, size_t num) {
             strncpy(dest, src, num);
         }
 
         void charncpy(const char** dest, const char* src, size_t num) {
-            strncpy(*dest, src, num);
+            strncpy(to_char(*dest), src, num);
         }
         //Transform std::unique_ptr<char> into const char**
         const char** charptrToccharptr(std::unique_ptr<char>& ptr) {
-            return const_cast<const char**>(&ptr.get());
+            auto into = ptr.get();
+            return const_cast<const char**>(&into);
         }
         // do the same as strncpy but with const char **
         void charncpy(const char** dest, const char** src, size_t num)
@@ -230,26 +218,28 @@ namespace core {
         xchar(const char* ch):_data(std::make_unique<const char*>(ch)) {}
         // move assignment operator
         xchar& operator=(xchar&& other) noexcept {
-            data = std::move(other.data);
+            _data = std::move(other._data);
             return *this;
         }
         // overload the constructor for support int dataType
         xchar(int i) {
             char buffer[10];
             snprintf(buffer, sizeof(buffer), "%d", i);
-            data = buffer;
+            xchar temp(buffer);
+            _data = std::move(temp._data);
         }
+
         // support '<<' operator
         friend std::ostream& operator<<(std::ostream& os, const xchar& xc) {
-            os << xc.data;
+            os << xc._data;
             return os;
         }
         // support '>>' operator
         friend std::istream& operator>>(std::istream& is, xchar& xc) {
             std::string temp;
             is >> temp;
-            xc.data = new char[temp.length() + 1];
-            std::strcpy(xc.to_char(xc.data), temp.c_str());
+            xc._data = std::make_unique<const char*>(new char[temp.length() + 1]);
+            std::strcpy(xc._data.get(), temp.c_str());
             return is;
         }
         // remove a character of xchar
@@ -452,10 +442,8 @@ namespace core {
             delete[] temp;
         }
     private:
-        const char* data;
         std::unique_ptr<const char*> _data;
     };
-    class fera {
-
-    };
+    // TOO: graphics class
+    class fera {};
 }
