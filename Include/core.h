@@ -1,0 +1,11 @@
+#pragma once
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include <regex>
+#include <cstring>
+#include <algorithm>
+#include <cmath>
+#include <fstream>
+#include <unordered_map>
+#include <initializer_list>
