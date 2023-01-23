@@ -1,4 +1,6 @@
 ![Xore](xore.png)
+# About Development mode
+**This branch may contain various issues such as bugs and memory leaks. It is recommended to use the main branch, which is considered the release or stable version of the library.**
 ## what's the library about?
 **It's a multipurpose library.**
 **see [features](#features) for know what has got the library!**
