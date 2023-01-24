@@ -7,6 +7,9 @@ namespace core
       class xchar
     {
     public:
+// constructors
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------    
         xchar() : data(nullptr) {}
         xchar(const char *ch) : data(std::make_unique<char[]>(charlen(ch) + 1))
         {
@@ -17,10 +20,36 @@ namespace core
             data = std::make_unique<char[]>(len + 1);
             charcpy(data.get(), str.data(), len + 1);
         }
+        xchar(int i)
+        {
+            std::string str = std::to_string(i);
+            data = std::make_unique<char[]>(str.length() + 1);
+            charcpy(data.get(), str.c_str(), str.length() + 1);
+        }
+        xchar(char ch)
+        {  
+            try
+            {
+                data = std::make_unique<char[]>(2);
+                data[0] = ch;
+                data[1] = '\0';
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+            
+        }
+// additional functions      
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+        // searches a part of xchar object and returns a boolean value
         bool search(const char *str) const
         {
             return std::strstr(data.get(), str) != nullptr;
         }
+        // replaces a part of xchar object
+        // it's in test yet
          void replace(const char* old_str, const char* new_str) {
             size_t old_len = lchar(old_str);
             size_t new_len = lchar(new_str);
@@ -33,31 +62,13 @@ namespace core
                 pos += new_len;
             }
         }
+        // calculate the length of the a const char*
         size_t lchar(const char *str)
         {
             size_t length = 0;
             while (*str++)
                 ++length;
             return length;
-        }
-        xchar(char ch)
-        {
-            try
-            {
-                data = std::make_unique<char[]>(2);
-                data[0] = ch;
-                data[1] = '\0';
-            }
-            catch (const std::exception &e)
-            {
-                std::cerr << e.what() << '\n';
-            }
-        }
-        xchar(int i)
-        {
-            std::string str = std::to_string(i);
-            data = std::make_unique<char[]>(str.length() + 1);
-            charcpy(data.get(), str.c_str(), str.length() + 1);
         }
         template <typename... Args>
         void append(Args &&...args)
@@ -172,6 +183,18 @@ namespace core
         }
         // A function that safely executes a block of code
         void catcher(void (*func)())
+        {
+            try
+            {
+                func();
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+        }
+        template <typename F>
+        F catcher(F (*func)())
         {
             try
             {
