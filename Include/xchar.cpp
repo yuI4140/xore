@@ -120,6 +120,15 @@ namespace core
             data = std::make_unique<char[]>(temp.length() + 1);
             std::strcpy(data.get(), temp.c_str());
         }
+        //A function that safely executes a block of code
+        void catcher(void (*func)()) {
+            try {
+                func();
+            }
+            catch (const std::exception& e) {
+                std::cerr << e.what() << '\n';
+            }
+        }
     private:
         std::unique_ptr<char[]> data;
         size_t size() const { return data.get() ? std::strlen(data.get()) : 0; }
