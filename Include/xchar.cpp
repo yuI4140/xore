@@ -254,24 +254,18 @@ namespace core
             {
                 return;
             }
-
-
             if (src < dest && src + destSize > dest)
             {
                 // overlapping
                 return;
             }
-
-
             if (std::strlen(src) >= destSize)
             {
                 // destSize is not large enough
                 return;
             }
-
-
             size_t i;
-            for (i = 0; i < destSize && src[i] != '\0'; i++)
+            for ( i = 0; i < destSize && src[i] != '\0'; i++)
             {
                 dest[i] = src[i];
             }
