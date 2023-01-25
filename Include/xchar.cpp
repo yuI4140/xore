@@ -532,9 +532,8 @@ namespace core
     public:
         xchar_view(const xchar& str) : data_(str.get()), length_(str.size()) {}
         xchar_view(const char* str) : data_(str), length_(std::strlen(str)) {}
-        xchar_view(const xchar& str) : data_(str.get()), size_(str.size()) {}
         const char* data() const { return data_; }
-        size_t size() const { return size_; }
+        size_t size() const { return length_; }
         void remove_prefix(size_t n) {
             data_ += n;
             length_ -= n;
@@ -557,6 +556,5 @@ namespace core
     private:
         const char* data_;
         size_t length_;
-        size_t size_;
 };
 };// namespace core
