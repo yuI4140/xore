@@ -295,6 +295,27 @@ namespace core
             std::strcpy(new_data.get() + pos, data.get() + pos + len);
             data = std::move(new_data);
         }
+        char& at(size_t pos) {
+            if (pos >= size()) {
+                throw std::out_of_range("Index out of range");
+            }
+            return data[pos];
+        }
+
+        const char& at(size_t pos) const {
+            if (pos >= size()) {
+                throw std::out_of_range("Index out of range");
+            }
+            return data[pos];
+        }
+
+        char& operator[](size_t pos) {
+            return data[pos];
+        }
+
+        const char& operator[](size_t pos) const {
+            return data[pos];
+        }
         void insert(size_t pos, const xchar& other) {
             auto pos_newdata = data.get()[pos];
             auto len = get_size(pos_newdata);
