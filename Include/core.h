@@ -3,6 +3,7 @@
 #include <vector>
 #include <sstream>
 #include <regex>
+#include <cassert>
 #include <cstring>
 #include <algorithm>
 #include <cmath>
