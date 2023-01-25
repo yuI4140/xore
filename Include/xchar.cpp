@@ -6,8 +6,8 @@ namespace core
     //for const char* and char* data typess.
     class xchar
     {  // extra members of the class
-        core::xchar_iterator begin() { return xchar_iterator(data.get()); }
-        core::xchar_iterator end() { return xchar_iterator(data.get() + std::strlen(data.get())); }
+        core::xcharIterator begin() { return xcharIterator(data.get()); }
+        core::xcharIterator end() { return xcharIterator(data.get() + std::strlen(data.get())); }
         // constructors
         //------------------------------------------------------------------------
         //------------------------------------------------------------------------    
@@ -468,31 +468,31 @@ namespace core
 
         } 
     };// end of the xchar class
-        class xchar_iterator: public std::iterator<std::forward_iterator_tag, char>
+        class xcharIterator: public std::iterator<std::forward_iterator_tag, char>
         {
         public:
             // constructors
             //------------------------------------------------------------------------
-            xchar_iterator(char* p): ptr_(p) {}
+            xcharIterator(char* p): ptr_(p) {}
             // overloaded operators
             //------------------------------------------------------------------------
             char& operator*() { return *ptr_; }
             char* operator->() { return ptr_; }
 
-            xchar_iterator& operator++() {
+            xcharIterator& operator++() {
                 ptr_++;
                 return *this;
             }
-            xchar_iterator operator++(int) {
-                xchar_iterator tmp(*this);
+            xcharIterator operator++(int) {
+                xcharIterator tmp(*this);
                 operator++();
                 return tmp;
             }
 
-            bool operator==(const xchar_iterator& other) const { return ptr_ == other.ptr_; }
-            bool operator!=(const xchar_iterator& other) const { return ptr_ != other.ptr_; }
+            bool operator==(const xcharIterator& other) const { return ptr_ == other.ptr_; }
+            bool operator!=(const xcharIterator& other) const { return ptr_ != other.ptr_; }
 
         private:
             char* ptr_;
         };// end of the iterator class for xchar
-    };// namespace core
+ };// namespace core
