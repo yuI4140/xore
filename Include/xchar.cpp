@@ -5,7 +5,9 @@ namespace core
     //data type offering a variety of functions and transformations 
     //for const char* and char* data typess.
     class xchar
-    {
+    {  // extra members of the class
+        xchar_iterator begin() { return xchar_iterator(data.get()); }
+        xchar_iterator end() { return xchar_iterator(data.get() + std::strlen(data.get())); }
         // constructors
         //------------------------------------------------------------------------
         //------------------------------------------------------------------------    
@@ -41,10 +43,10 @@ namespace core
             }
 
         }
-// additional functions      
-//------------------------------------------------------------------------
-//------------------------------------------------------------------------
-                // searches a part of xchar object and returns a boolean value
+        // additional functions      
+        //------------------------------------------------------------------------
+        //------------------------------------------------------------------------
+                        // searches a part of xchar object and returns a boolean value
         bool search(const char* str) const
         {
             return std::strstr(data.get(), str) != nullptr;
@@ -120,7 +122,7 @@ namespace core
             std::string temp;
             is >> temp;
             xc.data = std::make_unique<char[]>(temp.length() + 1);
-            xc.charcpy(xc.data.get(), temp.c_str(),xc.size());
+            xc.charcpy(xc.data.get(), temp.c_str(), xc.size());
             return is;
         }
         size_t get_size(const char* str)
@@ -212,6 +214,21 @@ namespace core
                 std::cerr << e.what() << '\n';
             }
         }
+        bool empty() const noexcept {
+            auto array = data.get();
+            if (array  == nullptr|| array[0] == 0) return true;
+            else return false; 
+        }
+        const char* at(){
+            //TODO: get character in xchar object
+        }
+        std::string to_string(){
+            std::string result;
+            std::copy(front(),back(),result);
+        }
+        std::string to_string(std::string_view& view){
+            
+        }
         size_t charlen(const char** str)
         {
             size_t length = 0;
@@ -229,6 +246,17 @@ namespace core
                 length++;
             }
             return length;
+        }
+          char front() const {
+            if(empty()){
+                throw std::out_of_range("xchar is empty");
+            }
+                return data[0];
+        }
+        char back() const {
+            if(empty())
+                throw std::out_of_range("xchar is empty");
+            return data[std::strlen(data.get()) - 1];
         }
     private:
         std::unique_ptr<char[]> data;
@@ -265,11 +293,38 @@ namespace core
                 return;
             }
             size_t i;
-            for ( i = 0; i < destSize && src[i] != '\0'; i++)
+            for (i = 0; i < destSize && src[i] != '\0'; i++)
             {
                 dest[i] = src[i];
             }
             dest[i] = '\0';
         }
     }; // end of the xchar class
+    class xchar_iterator: public std::iterator<std::forward_iterator_tag, char>
+    {
+    public:
+        // constructors
+        //------------------------------------------------------------------------
+        xchar_iterator(char* p): ptr_(p) {}
+        // overloaded operators
+        //------------------------------------------------------------------------
+        char& operator*() { return *ptr_; }
+        char* operator->() { return ptr_; }
+
+        xchar_iterator& operator++() {
+            ptr_++;
+            return *this;
+        }
+        xchar_iterator operator++(int) {
+            xchar_iterator tmp(*this);
+            operator++();
+            return tmp;
+        }
+
+        bool operator==(const xchar_iterator& other) const { return ptr_ == other.ptr_; }
+        bool operator!=(const xchar_iterator& other) const { return ptr_ != other.ptr_; }
+
+    private:
+        char* ptr_;
+    };// end of the iterator class for xchar
 } // namespace core
