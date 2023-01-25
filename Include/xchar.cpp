@@ -456,10 +456,10 @@ namespace core
                 pos += new_len;
             }
         }
+        size_t size() const { return data.get() ? std::strlen(data.get()) : 0; }
     private:
         std::unique_ptr<char[]> data;
         static constexpr size_t npos = std::numeric_limits<size_t>::max();
-        size_t size() const { return data.get() ? std::strlen(data.get()) : 0; }
         std::stringstream ss;
         void xmemcpy(void* dest, const void* src, size_t n, size_t dest_size)
         {
@@ -526,4 +526,34 @@ namespace core
     private:
         char* ptr_;
     };// end of the iterator class for xchar
+    // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
+    // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
+    class xchar_view{
+    public:
+        xchar_view(const xchar& str) : data_(str.get()), length_(str.size()) {}
+        xchar_view(const char* str) : data_(str), length_(std::strlen(str)) {}
+
+        void remove_prefix(size_t n) {
+            data_ += n;
+            length_ -= n;
+        }
+        void remove_suffix(size_t n) {
+            length_ -= n;
+        }
+        void swap(xchar_view& other) {
+            std::swap(data_, other.data_);
+            std::swap(length_, other.length_);
+        }
+        const char* begin() const { return data_; }
+        const char* end() const { return data_ + length_; }
+
+        xchar_view& operator=(const xchar& str) {
+            data_ = str.get();
+            length_ = str.size();
+            return *this;
+        }
+    private:
+        const char* data_;
+        size_t length_;
+};
 };// namespace core
