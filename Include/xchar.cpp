@@ -526,6 +526,7 @@ namespace core
     private:
         char* ptr_;
     };// end of the iterator class for xchar
+//----------------------------------------------------------------    
     // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
     // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
     class xchar_view{
