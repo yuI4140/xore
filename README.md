@@ -17,12 +17,19 @@ download it from **github.com/** or do a git clone
 - **xchar to std::string**
 #### Example:
 ```cpp
-using xch=core::xchar;
-xch var="Ex";
-    xch array[5]={"hello",var,"world",5,std::string("hello world")};
-    for (int i=0; i<4;++i){
-        std::cout <<array[i] << std::endl;
-    }
+// 01/25/2023-EXAMPLE
+core::xchar var0("hello");
+core::xchar var1(143123);//now supports int stable version
+core::xchar var2(std::string("hello"));
+core::xchar var3('h');
+core::xchar arrayOfXchar[200]={var0,var1,var2,var3};
+void xfunc(core::xchar_view& view ){
+   if(view.size()>5){
+       char* data=const_cast<char*>(view.data());
+       strcpy(data,"hello");
+   }
+}
+xfunc(arrayOfXchar[2]);
 ```
 ### Matrix class
 *A matrix dataType that replace the classic C-style matrix*
