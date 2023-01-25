@@ -267,6 +267,16 @@ namespace core
                 throw std::out_of_range("xchar is empty");
             return data[std::strlen(data.get()) - 1];
         }
+        void pop_back() {
+            // Get the current length of the string
+            size_t length = lchar(data.get());
+            // Check if the string is already empty
+            if (length == 0) {
+                return;
+            }
+            // Set the last character to '\0' to remove it
+            data[length - 1] = '\0';
+        }
         void push_back(const xchar& other) {
             insert(std::strlen(data.get()), other);
         }
@@ -466,33 +476,33 @@ namespace core
             dest[i] = '\0';
 
 
-        } 
+        }
     };// end of the xchar class
-        class xcharIterator: public std::iterator<std::forward_iterator_tag, char>
-        {
-        public:
-            // constructors
-            //------------------------------------------------------------------------
-            xcharIterator(char* p): ptr_(p) {}
-            // overloaded operators
-            //------------------------------------------------------------------------
-            char& operator*() { return *ptr_; }
-            char* operator->() { return ptr_; }
+    class xcharIterator: public std::iterator<std::forward_iterator_tag, char>
+    {
+    public:
+        // constructors
+        //------------------------------------------------------------------------
+        xcharIterator(char* p): ptr_(p) {}
+        // overloaded operators
+        //------------------------------------------------------------------------
+        char& operator*() { return *ptr_; }
+        char* operator->() { return ptr_; }
 
-            xcharIterator& operator++() {
-                ptr_++;
-                return *this;
-            }
-            xcharIterator operator++(int) {
-                xcharIterator tmp(*this);
-                operator++();
-                return tmp;
-            }
+        xcharIterator& operator++() {
+            ptr_++;
+            return *this;
+        }
+        xcharIterator operator++(int) {
+            xcharIterator tmp(*this);
+            operator++();
+            return tmp;
+        }
 
-            bool operator==(const xcharIterator& other) const { return ptr_ == other.ptr_; }
-            bool operator!=(const xcharIterator& other) const { return ptr_ != other.ptr_; }
+        bool operator==(const xcharIterator& other) const { return ptr_ == other.ptr_; }
+        bool operator!=(const xcharIterator& other) const { return ptr_ != other.ptr_; }
 
-        private:
-            char* ptr_;
-        };// end of the iterator class for xchar
- };// namespace core
+    private:
+        char* ptr_;
+    };// end of the iterator class for xchar
+};// namespace core
