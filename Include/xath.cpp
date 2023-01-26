@@ -1,11 +1,18 @@
 #include "core.h"
 // it pronounce sath
-namespace xath{
-class calculator{
-class parser{};
-class algebra{};
-class geometry{};
-}; 
+namespace xath {
+    class calculator {
+        class parser {
+        public:
+            parser(const core::xchar& val){
+                
+            };
+        private:
+            std::unique_ptr<char[]> data;
+        };
+        class algebra {};
+        class geometry {};
+    };
 };
 namespace core
 {
@@ -69,6 +76,9 @@ namespace core
                 charcpy(pos, new_str, new_len);
                 pos += new_len;
             }
+        }
+        char* toChar(xchar& xc) {
+            return xc.data.get();
         }
         // calculate the length of the a const char*
         size_t lchar(const char* str)
@@ -531,13 +541,13 @@ namespace core
     private:
         char* ptr_;
     };// end of the iterator class for xchar
-//----------------------------------------------------------------    
-    // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
-    // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
-    class xchar_view{
+    //----------------------------------------------------------------    
+        // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
+        // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
+    class xchar_view {
     public:
-        xchar_view(const xchar& str) : data_(str.get()), length_(str.size()) {}
-        xchar_view(const char* str) : data_(str), length_(std::strlen(str)) {}
+        xchar_view(const xchar& str): data_(str.get()), length_(str.size()) {}
+        xchar_view(const char* str): data_(str), length_(std::strlen(str)) {}
         const char* data() const { return data_; }
         size_t size() const { return length_; }
         void remove_prefix(size_t n) {
@@ -562,5 +572,5 @@ namespace core
     private:
         const char* data_;
         size_t length_;
-};
+    };
 };// namespace core

@@ -162,7 +162,9 @@ namespace core
             data[new_size] = '\0';
         }
 
-
+        char* toChar(xchar& xc) {
+            return xc.data.get();
+        }
         // returns the size of the allocated storage
         size_t capacity() const { return data.get() ? std::strlen(data.get()) : 0; }
 
@@ -219,15 +221,25 @@ namespace core
             if (array == nullptr || array[0] == 0) return true;
             else return false;
         }
-        const char* at() {
-            //TODO: get character in xchar object
+        const char* at(size_t index) {
+            if (index >= size()) {
+                throw std::out_of_range("Index out of range");
+            }
+            return data.get() + index;
         }
         std::string to_string() {
-            std::string result;
-            std::copy(front(), back(), result);
+            std::string result(data.get());
+            return result;
         }
         std::string to_string(std::string_view& view) {
-
+            return std::string(view.data(), view.size());
+        }
+        std::string to_string() const {
+            std::string result(data.get());
+            return result;
+        }
+        std::string to_string(std::string_view& view)const {
+            return std::string(view.data(), view.size());
         }
         size_t charlen(const char** str)
         {
@@ -528,10 +540,10 @@ namespace core
     };// end of the iterator class for xchar
     // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
     // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
-    class xchar_view{
+    class xchar_view {
     public:
-        xchar_view(const xchar& str) : data_(str.get()), length_(str.size()) {}
-        xchar_view(const char* str) : data_(str), length_(std::strlen(str)) {}
+        xchar_view(const xchar& str): data_(str.get()), length_(str.size()) {}
+        xchar_view(const char* str): data_(str), length_(std::strlen(str)) {}
 
         void remove_prefix(size_t n) {
             data_ += n;
@@ -555,5 +567,5 @@ namespace core
     private:
         const char* data_;
         size_t length_;
-};
+    };
 };// namespace core
