@@ -121,7 +121,7 @@ namespace core
             }
             auto len = temp.length();
             data = std::make_unique<char[]>(len + 1);
-            charcpy(data.get(), temp.c_str(), len + 1);
+            std::copy(begin(),end(),data.get());
         }
         xchar substr(const char* start, size_t len) noexcept
         {
