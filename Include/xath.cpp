@@ -2,6 +2,7 @@
 // it pronounce sath
 namespace xath {
     class calculator {
+        public:
         class parser {
         public:
             parser(const core::xchar& val) {
