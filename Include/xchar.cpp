@@ -65,6 +65,15 @@ namespace core
                 pos += new_len;
             }
         }
+        // remove the null terminator of xhcar object
+        void rmNullTerm() {
+            int len = size();
+            for (int i = 0; i < len; ++i) {
+                if (data[i] == '\0') {
+                    data[i] = ' '; // or remove this line to remove the null terminator
+                }
+            }
+        }
         // calculate the length of the a const char*
         size_t lchar(const char* str)
         {
@@ -111,6 +120,20 @@ namespace core
                 xchar(_data);
             }
             return *this;
+        }
+        size_t copy(char* dest, const char* src) const {
+            if (dest == nullptr || src == nullptr) {
+                return 0;
+            }
+
+            size_t src_len = std::strlen(src);
+            if (src < dest && src + src_len > dest) {
+                // overlapping
+                return 0;
+            }
+
+            charcpy(dest, src, src_len + 1);
+            return src_len;
         }
         friend std::ostream& operator<<(std::ostream& os, const xchar& xc)
         {
@@ -307,13 +330,6 @@ namespace core
             std::strcpy(new_data.get() + pos, data.get() + pos + len);
             data = std::move(new_data);
         }
-        char& at(size_t pos) {
-            if (pos >= size()) {
-                throw std::out_of_range("Index out of range");
-            }
-            return data[pos];
-        }
-
         const char& at(size_t pos) const {
             if (pos >= size()) {
                 throw std::out_of_range("Index out of range");

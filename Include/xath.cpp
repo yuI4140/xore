@@ -4,11 +4,15 @@ namespace xath {
     class calculator {
         class parser {
         public:
-            parser(const core::xchar& val){
-                
-            };
+            parser(const core::xchar& val) {
+                val.rmNullTerm();
+                auto len = val.size();
+                auto ndata = std::make_unique<char[]>(len);
+                controller.copy(data.get(),ndata.get());
+            }
         private:
             std::unique_ptr<char[]> data;
+            core::xchar controller;
         };
         class algebra {};
         class geometry {};
@@ -16,6 +20,9 @@ namespace xath {
 };
 namespace core
 {
+    //class that serves as an alternative to the built-in const char* 
+    //data type offering a variety of functions and transformations 
+    //for const char* and char* data typess.
     class xchar
     {  // extra members of the class
         core::xcharIterator begin() { return xcharIterator(data.get()); }
@@ -77,8 +84,22 @@ namespace core
                 pos += new_len;
             }
         }
-        char* toChar(xchar& xc) {
-            return xc.data.get();
+        // remove the null terminator of xhcar object
+        void rmNullTerm() {
+            int len = size();
+            for (int i = 0; i < len; ++i) {
+                if (data[i] == '\0') {
+                    data[i] = ' '; // or remove this line to remove the null terminator
+                }
+            }
+        }
+        void rmNullTerm()const {
+            int len = size();
+            for (int i = 0; i < len; ++i) {
+                if (data[i] == '\0') {
+                    data[i] = ' '; // or remove this line to remove the null terminator
+                }
+            }
         }
         // calculate the length of the a const char*
         size_t lchar(const char* str)
@@ -177,7 +198,9 @@ namespace core
             data[new_size] = '\0';
         }
 
-
+        char* toChar(xchar& xc) {
+            return xc.data.get();
+        }
         // returns the size of the allocated storage
         size_t capacity() const { return data.get() ? std::strlen(data.get()) : 0; }
 
@@ -234,15 +257,25 @@ namespace core
             if (array == nullptr || array[0] == 0) return true;
             else return false;
         }
-        const char* at() {
-            //TODO: get character in xchar object
+        const char* at(size_t index) {
+            if (index >= size()) {
+                throw std::out_of_range("Index out of range");
+            }
+            return data.get() + index;
         }
         std::string to_string() {
-            std::string result;
-            std::copy(front(), back(), result);
+            std::string result(data.get());
+            return result;
         }
         std::string to_string(std::string_view& view) {
-
+            return std::string(view.data(), view.size());
+        }
+        std::string to_string() const {
+            std::string result(data.get());
+            return result;
+        }
+        std::string to_string(std::string_view& view)const {
+            return std::string(view.data(), view.size());
         }
         size_t charlen(const char** str)
         {
@@ -310,13 +343,6 @@ namespace core
             std::strcpy(new_data.get() + pos, data.get() + pos + len);
             data = std::move(new_data);
         }
-        char& at(size_t pos) {
-            if (pos >= size()) {
-                throw std::out_of_range("Index out of range");
-            }
-            return data[pos];
-        }
-
         const char& at(size_t pos) const {
             if (pos >= size()) {
                 throw std::out_of_range("Index out of range");
@@ -389,6 +415,20 @@ namespace core
             size_t len = std::min(data_len - pos, count);
             charcpy(dest, data.get() + pos, len);
             return len;
+        }
+        size_t copy(char* dest, const char* src) const {
+            if (dest == nullptr || src == nullptr) {
+                return 0;
+            }
+
+            size_t src_len = std::strlen(src);
+            if (src < dest && src + src_len > dest) {
+                // overlapping
+                return 0;
+            }
+
+            charcpy(dest, src, src_len + 1);
+            return src_len;
         }
         size_t find(const char* str, size_t pos = 0) const {
             const char* found = std::strstr(data.get() + pos, str);
@@ -541,15 +581,13 @@ namespace core
     private:
         char* ptr_;
     };// end of the iterator class for xchar
-    //----------------------------------------------------------------    
-        // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
-        // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
+    // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
+    // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
     class xchar_view {
     public:
         xchar_view(const xchar& str): data_(str.get()), length_(str.size()) {}
         xchar_view(const char* str): data_(str), length_(std::strlen(str)) {}
-        const char* data() const { return data_; }
-        size_t size() const { return length_; }
+
         void remove_prefix(size_t n) {
             data_ += n;
             length_ -= n;
