@@ -6,8 +6,9 @@ namespace core
     //for const char* and char* data typess.
     class xchar
     {  // extra members of the class
-        core::xcharIterator begin() { return xcharIterator(data.get()); }
-        core::xcharIterator end() { return xcharIterator(data.get() + std::strlen(data.get())); }
+		using xcharIterator = core::xcharIterator;
+        xcharIterator begin() { return xcharIterator(data.get()); }
+        xcharIterator end() { return xcharIterator(data.get() + std::strlen(data.get())); }
         // constructors
         //------------------------------------------------------------------------
         //------------------------------------------------------------------------    
