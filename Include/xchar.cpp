@@ -1,3 +1,5 @@
+#ifndef _XCHAR
+#define _XCHAR
 #include "core.h"
 namespace core
 {
@@ -586,3 +588,4 @@ namespace core
         size_t length_;
     };
 };// namespace core
+#endif
