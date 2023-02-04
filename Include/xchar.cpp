@@ -83,14 +83,29 @@ namespace core
         // replaces a part of xchar object
         // it's in test yet
         void replace(const char* old_str, const char* new_str) {
-            size_t old_len = lchar(old_str);
-            size_t new_len = lchar(new_str);
+            size_t old_len = strlen(old_str);
+            size_t new_len = strlen(new_str);
             char* temp = data.get();
             char* pos = temp;
             while ((pos = std::strstr(pos, old_str)) != nullptr) {
-                size_t len = lchar(pos) + old_len;
-                std::memmove(pos + new_len, pos + old_len, lchar(pos + old_len) + 1);
-                charcpy(pos, new_str, new_len);
+                size_t remaining_len = strlen(pos + old_len) + 1; // +1 to include the null terminator
+                if (new_len > old_len) {
+                    // New string is larger than old string, need to increase size of buffer
+                    size_t new_buffer_size = strlen(temp) + new_len - old_len + 1; // +1 to include the null terminator
+                    std::unique_ptr<char[]> new_buffer = std::make_unique<char[]>(new_buffer_size);
+                    // Copy data before the old string to the new buffer
+                    charcpy(new_buffer.get(), temp, pos - temp);
+                    // Copy the new string to the new buffer
+                    charcpy(new_buffer.get() + (pos - temp), new_str, new_len);
+                    // Copy the data after the old string to the new buffer
+                    charcpy(new_buffer.get() + (pos - temp) + new_len, pos + old_len, remaining_len);
+                    data = std::move(new_buffer);
+                }
+                else {
+                    // New string is smaller or equal in size to old string, can do in-place replacement
+                    std::memmove(pos + new_len, pos + old_len, remaining_len);
+                    charcpy(pos, new_str, new_len);
+                }
                 pos += new_len;
             }
         }
@@ -485,33 +500,6 @@ namespace core
             size_t copy_size = std::min(new_size, std::strlen(data.get()));
             xmemcpy(new_data.get(), data.get(), copy_size, new_size);
             data = std::move(new_data);
-        }
-        void replace(const char* old_str, const char* new_str) {
-            size_t old_len = strlen(old_str);
-            size_t new_len = strlen(new_str);
-            char* temp = data.get();
-            char* pos = temp;
-            while ((pos = std::strstr(pos, old_str)) != nullptr) {
-                size_t remaining_len = strlen(pos + old_len) + 1; // +1 to include the null terminator
-                if (new_len > old_len) {
-                    // New string is larger than old string, need to increase size of buffer
-                    size_t new_buffer_size = strlen(temp) + new_len - old_len + 1; // +1 to include the null terminator
-                    std::unique_ptr<char[]> new_buffer = std::make_unique<char[]>(new_buffer_size);
-                    // Copy data before the old string to the new buffer
-                    charcpy(new_buffer.get(), temp, pos - temp);
-                    // Copy the new string to the new buffer
-                    charcpy(new_buffer.get() + (pos - temp), new_str, new_len);
-                    // Copy the data after the old string to the new buffer
-                    charcpy(new_buffer.get() + (pos - temp) + new_len, pos + old_len, remaining_len);
-                    data = std::move(new_buffer);
-                }
-                else {
-                    // New string is smaller or equal in size to old string, can do in-place replacement
-                    std::memmove(pos + new_len, pos + old_len, remaining_len);
-                    charcpy(pos, new_str, new_len);
-                }
-                pos += new_len;
-            }
         }
         size_t size() const { return data.get() ? std::strlen(data.get()) : 0; }
     private:
