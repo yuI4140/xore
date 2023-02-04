@@ -2,7 +2,33 @@
 #define _XCHAR
 #include "core.h"
 namespace core
-{
+{class xcharIterator: public std::iterator<std::forward_iterator_tag, char>
+    {
+    public:
+        // constructors
+        //------------------------------------------------------------------------
+        xcharIterator(char* p): ptr_(p) {}
+        // overloaded operators
+        //------------------------------------------------------------------------
+        char& operator*() { return *ptr_; }
+        char* operator->() { return ptr_; }
+
+        xcharIterator& operator++() {
+            ptr_++;
+            return *this;
+        }
+        xcharIterator operator++(int) {
+            xcharIterator tmp(*this);
+            operator++();
+            return tmp;
+        }
+
+        bool operator==(const xcharIterator& other) const { return ptr_ == other.ptr_; }
+        bool operator!=(const xcharIterator& other) const { return ptr_ != other.ptr_; }
+
+    private:
+        char* ptr_;
+    };// end of the iterator class for xchar
     //class that serves as an alternative to the built-in const char* 
     //data type offering a variety of functions and transformations 
     //for const char* and char* data typess.
@@ -530,33 +556,6 @@ namespace core
 
         }
     };// end of the xchar class
-    class xcharIterator: public std::iterator<std::forward_iterator_tag, char>
-    {
-    public:
-        // constructors
-        //------------------------------------------------------------------------
-        xcharIterator(char* p): ptr_(p) {}
-        // overloaded operators
-        //------------------------------------------------------------------------
-        char& operator*() { return *ptr_; }
-        char* operator->() { return ptr_; }
-
-        xcharIterator& operator++() {
-            ptr_++;
-            return *this;
-        }
-        xcharIterator operator++(int) {
-            xcharIterator tmp(*this);
-            operator++();
-            return tmp;
-        }
-
-        bool operator==(const xcharIterator& other) const { return ptr_ == other.ptr_; }
-        bool operator!=(const xcharIterator& other) const { return ptr_ != other.ptr_; }
-
-    private:
-        char* ptr_;
-    };// end of the iterator class for xchar
     // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
     // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
     class xchar_view {
