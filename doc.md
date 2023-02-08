@@ -65,3 +65,5 @@ The Xchar View class is a lightweight, non-owning string view class that provide
 - `xchar_view& operator=(const xchar& str)`: Assigns the contents of `str` to the Xchar View object.
 
 ### Private Member Variables
+- `const char* data_`: A pointer to a character array holding the data of the string.
+- `size_t length_`: An integer representing the length of the string.
