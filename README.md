@@ -11,5 +11,5 @@ download it from **github.com/** or do a git clone
 *and include in your project.*
 
 ## Documentation and futures features
-[DOCUMENTATION](doc.md)
+[DOCUMENTATION](doc.md).
 [Futures-Features](FF.md)
