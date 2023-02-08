@@ -1,5 +1,4 @@
-# Xchar Class
-This is the documentation for the Xchar and a class for do the same as std::string_view but for xchar called Xchar View classes, which are defined in the `core` namespace.
+# DOCUMENTATION
 
 ## Xchar Class
 
