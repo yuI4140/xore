@@ -53,10 +53,11 @@ namespace core
             charcpy(data.get(), str.data(), len + 1);
         }
         xchar(int i)
-        {
-            std::string str = std::to_string(i);
-            data = std::make_unique<char[]>(str.length() + 1);
-            charcpy(data.get(), str.c_str(), str.length() + 1);
+        {	
+			std::array<char, 30> ch;
+			sprintf_s(ch, 30, "%d", i);
+            data = std::make_unique<char[]>(ch.size() + 1);
+            charcpy(data.get(),ch, ch.size() + 1);
         }
         xchar(char ch)
         {

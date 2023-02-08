@@ -8,15 +8,28 @@
 ---------------------------
 ## Xchar Class
 
-The Xchar class is a custom implementation of a dynamic string class that can be resized and manipulated. It is implemented as a `std::unique_ptr` to a char array and has the following member functions:
+The Xchar class is a custom implementation of a dynamic string class
+that can be resized and manipulated. It is implemented as a
+`std::unique_ptr` to a char array and has the following member functions:
 
 ### Member Functions
 
 #### Constructors
 
-- `xchar()`: Constructs an empty Xchar object.
+- `xchar(): data(nullptr)`: 
+*Constructs an empty Xchar object.*
 
-- `xchar(const char* str)`: Constructs an Xchar object with the contents of `str`.
+- `xchar(const char* ch): data(std::make_unique<char[]>(charlen(ch) + 1))`: 
+*Constructs an Xchar obj as a `const char*`*.
+
+- `xchar(std::string_view str)`:
+*Take the data from std::string and transform it into a Xchar Obj*
+
+- `xchar(int i)`:
+*transforms the `intiger` to a Xchar Obj*
+
+- `xchar(char ch)`:
+*Do a `std::make_unique<char[]>` and set the char into frist loc and a null term in second loc*
 
 #### Accessors
 
