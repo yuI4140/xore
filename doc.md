@@ -3,7 +3,7 @@
 
 - [**xchar Class**](#Xchar-Class)
 - [**xchar view**](#Xchar-View-Class)
-- [**Matrix_Class**](#Matrix-Class)
+- [**Matrix Class**](#Matrix-Class)
 
 ---------------------------
 ## Xchar Class
