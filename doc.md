@@ -1,12 +1,12 @@
 # DOCUMENTATION
 ## Index
 
-- **[xchar_Class](Xchar_Class)**
-- **[xchar_view](Xchar_View_Class)**
-- **[Matrix_Class](Matrix_Class)**
+- **[xchar_Class](#Xchar-Class)**
+- **[xchar_view](#Xchar-View-Class)**
+- **[Matrix_Class](#Matrix-Class)**
 
 ---------------------------
-## Xchar_Class
+## Xchar Class
 
 The Xchar class is a custom implementation of a dynamic string class that can be resized and manipulated. It is implemented as a `std::unique_ptr` to a char array and has the following member functions:
 
@@ -40,7 +40,7 @@ The Xchar class is a custom implementation of a dynamic string class that can be
 
 - `void charcpy(char* dest, const char* src, size_t destSize) const`: A private helper function that performs a safe string copy operation.
 
-## Xchar_View_Class
+## Xchar View Class
 
 The Xchar View class is a lightweight, non-owning string view class that provides access to a portion of an Xchar object. It has the following member functions:
 
@@ -74,4 +74,4 @@ The Xchar View class is a lightweight, non-owning string view class that provide
 - `const char* data_`: A pointer to a character array holding the data of the string.
 - `size_t length_`: An integer representing the length of the string.
 
-## Matrix_Class
+## Matrix Class
