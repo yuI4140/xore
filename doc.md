@@ -1,9 +1,9 @@
 # DOCUMENTATION
 ## Index
 
-- **[xchar_Class](#Xchar-Class)**
-- **[xchar_view](#Xchar-View-Class)**
-- **[Matrix_Class](#Matrix-Class)**
+- [**xchar Class**](#Xchar-Class)
+- [**xchar view**](#Xchar-View-Class)
+- [**Matrix_Class**](#Matrix-Class)
 
 ---------------------------
 ## Xchar Class
