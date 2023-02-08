@@ -47,6 +47,6 @@ var1.priint();
 - **std::string**
 - **char**
 - **const char**
-- **also suppports int but it's not stable yet.(01-20-2023)**
+- **int**
 ## Documentation and futures features
-**TODO!**
+[DOCUMENTATION](doc.md)
