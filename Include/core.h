@@ -10,5 +10,7 @@
 #include <algorithm>
 #include <cmath>
 #include <fstream>
+#include <cstdio>
+#include <array>
 #include <unordered_map>
 #include <initializer_list>

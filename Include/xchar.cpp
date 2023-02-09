@@ -1,5 +1,4 @@
-#ifndef _XCHAR
-#define _XCHAR
+#pragma once
 #include "core.h"
 namespace core
 {
@@ -65,7 +64,7 @@ namespace core
 			data = std::make_unique<char[]>(len + 1);
 			charcpy(data.get(), ch, len + 1);
 		}
-		xchar(const char16_t* ch);
+		xchar(const char16_t& ch);
 		xchar(char32_t ch);
 		xchar(wchar_t ch);
 		xchar(char ch)
@@ -88,6 +87,29 @@ namespace core
 		bool search(const char *str) const
 		{
 			return std::strstr(data.get(), str) != nullptr;
+		}
+		const char* to_cchar(const char16_t *str16)
+		{
+			constexpr int len = std::char_traits<char16_t>::length(str16);
+			char *str8 = new char[len * 4 + 1];
+			int pos = 0;
+
+			for (int i = 0; i < len; i++) {
+				char16_t c = str16[i];
+				if (c <= 0x7F) {
+					str8[pos++] = static_cast<char>(c);
+				} else if (c <= 0x7FF) {
+					str8[pos++] = static_cast<char>(0xC0 | ((c >> 6) & 0x1F));
+					str8[pos++] = static_cast<char>(0x80 | (c & 0x3F));
+				} else {
+					str8[pos++] = static_cast<char>(0xE0 | ((c >> 12) & 0x0F));
+					str8[pos++] = static_cast<char>(0x80 | ((c >> 6) & 0x3F));
+					str8[pos++] = static_cast<char>(0x80 | (c & 0x3F));
+				}
+			}
+
+			str8[pos] = '\0';
+			return str8;
 		}
 		// replaces a part of xchar object
 		// it's in test yet
@@ -687,4 +709,3 @@ namespace core
 		size_t length_;
 	};
 }; // namespace core
-#endif
