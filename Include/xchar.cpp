@@ -90,7 +90,7 @@ namespace core
 		}
 		const char* to_cchar(const char16_t *str16)
 		{
-			constexpr int len = std::char_traits<char16_t>::length(str16);
+			const int len = std::char_traits<char16_t>::length(str16);
 			char *str8 = new char[len * 4 + 1];
 			int pos = 0;
 
