@@ -700,7 +700,7 @@ namespace core
 		{
 			data_ = str.get();
 			length_ = str.size();
- 
+			return *this;
 		}
 
 
