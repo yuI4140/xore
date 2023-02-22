@@ -1,496 +1,189 @@
-#ifndef _XCHAR
-#define _XCHAR
+#ifndef _XCHAR_
+#define _XCHAR_
 #include "core.h"
 namespace core
-{class xcharIterator: public std::iterator<std::forward_iterator_tag, char>
-    {
+{   class xchar{
     public:
-    xcharIterator(char* p): ptr_(p) {}
-        char& operator*() { return *ptr_; }
-        char* operator->() { return ptr_; }
+	class xchar_iterator {
+	public:
+		using iterator_category = std::random_access_iterator_tag;
+		using value_type = char;
+		using difference_type = std::ptrdiff_t;
+		using pointer = char*;
+		using reference = char&;
 
-        xcharIterator& operator++() {
-            ptr_++;
-            return *this;
-        }
-        xcharIterator operator++(int) {
-            xcharIterator tmp(*this);
-            operator++();
-            return tmp;
-        }
+		explicit xchar_iterator(pointer ptr) : m_ptr(ptr) {}
 
-        bool operator==(const xcharIterator& other) const { return ptr_ == other.ptr_; }
-        bool operator!=(const xcharIterator& other) const { return ptr_ != other.ptr_; }
+		reference operator*() const {
+			return *m_ptr;
+		}
 
-    private:
-        char* ptr_;
-    };// end of the iterator class for xchar
-    class xchar
-    {  	using xcharIterator = core::xcharIterator;
-        xcharIterator begin() { return xcharIterator(data.get()); }
-        xcharIterator end() { return xcharIterator(data.get() + std::strlen(data.get())); }
-    public:
-        xchar(): data(nullptr) {}
-        xchar(const char* ch): data(std::make_unique<char[]>(charlen(ch) + 1))
-        {
-            strcpy(data.get(), ch);
-        }
-        xchar(std::string& str)
-        {
-            auto len = str.length();
-            data = std::make_unique<char[]>(len + 1);
-            charcpy(data.get(), str.data(), len + 1);
-        }
-        xchar(int i)
-        {
-            std::string str = std::to_string(i);
-            data = std::make_unique<char[]>(str.length() + 1);
-            charcpy(data.get(), str.c_str(), str.length() + 1);
-        }
-        xchar(char ch)
-        {
-            try
-            {
-                data = std::make_unique<char[]>(2);
-                data[0] = ch;
-                data[1] = '\0';
-            }
-            catch (const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
+		pointer operator->() const {
+			return m_ptr;
+		}
 
-        }
-        // searches a part of xchar object and returns a boolean value
-        bool search(const char* str) const
-        {
-            return std::strstr(data.get(), str) != nullptr;
-        }
-        // replaces a part of xchar object
-        // it's in test yet
-        void replace(const char* old_str, const char* new_str) {
-            size_t old_len = strlen(old_str);
-            size_t new_len = strlen(new_str);
-            char* temp = data.get();
-            char* pos = temp;
-            while ((pos = std::strstr(pos, old_str)) != nullptr) {
-                size_t remaining_len = strlen(pos + old_len) + 1; // +1 to include the null terminator
-                if (new_len > old_len) {
-                    // New string is larger than old string, need to increase size of buffer
-                    size_t new_buffer_size = strlen(temp) + new_len - old_len + 1; // +1 to include the null terminator
-                    std::unique_ptr<char[]> new_buffer = std::make_unique<char[]>(new_buffer_size);
-                    // Copy data before the old string to the new buffer
-                    charcpy(new_buffer.get(), temp, pos - temp);
-                    // Copy the new string to the new buffer
-                    charcpy(new_buffer.get() + (pos - temp), new_str, new_len);
-                    // Copy the data after the old string to the new buffer
-                    charcpy(new_buffer.get() + (pos - temp) + new_len, pos + old_len, remaining_len);
-                    data = std::move(new_buffer);
-                }
-                else {
-                    // New string is smaller or equal in size to old string, can do in-place replacement
-                    std::memmove(pos + new_len, pos + old_len, remaining_len);
-                    charcpy(pos, new_str, new_len);
-                }
-                pos += new_len;
-            }
-        }
-        // remove the null terminator of xhcar object
-        void rmNullTerm() {
-            int len = size();
-            for (int i = 0; i < len; ++i) {
-                if (data[i] == '\0') {
-                    data[i] = ' '; // or remove this line to remove the null terminator
-                }
-            }
-        }
-        // calculate the length of the a const char*
-        size_t lchar(const char* str)
-        {
-            size_t length = 0;
-            while (*str++)
-                ++length;
-            return length;
-        }
-        template <typename... Args>
-        void append(Args &&...args)
-        {
-            std::initializer_list<const char*> list{ std::forward<Args>(args)... };
-            std::string temp;
-            temp.append(data.get());
-            for (auto i : list)
-            {
-                temp.append(i);
-            }
-            auto len = temp.length();
-            data = std::make_unique<char[]>(len + 1);
-            charcpy(data.get(), temp.c_str(), len + 1);
-        }
-        xchar substr(const char* start, size_t len) noexcept
-        {
-            size_t data_len = std::strlen(data.get());
-            if (start < data.get() || start >= data.get() + data_len)
-            {
-                return xchar();
-            }
-            if (start + len > data.get() + data_len)
-            {
-                return xchar();
-            }
-            std::string&& sub_string(start);sub_string.resize(len);
-            return xchar(sub_string.data());
-        }
-        xchar& operator=(const xchar& other)
-        {
-            char* ndata = other.data.get();
-            char* _data = data.get();
-            if (this != &other)
-            {
-                _data = std::move(ndata);
-                xchar(_data);
-            }
-            return *this;
-        }
-        size_t copy(char* dest, const char* src) const {
-            if (dest == nullptr || src == nullptr) {
-                return 0;
-            }
+		xchar_iterator& operator++() {
+			++m_ptr;
+			return *this;
+		}
 
-            size_t src_len = std::strlen(src);
-            if (src < dest && src + src_len > dest) {
-                // overlapping
-                return 0;
-            }
+		xchar_iterator operator++(int) {
+			xchar_iterator temp = *this;
+			++m_ptr;
+			return temp;
+		}
 
-            charcpy(dest, src, src_len + 1);
-            return src_len;
-        }
-        friend std::ostream& operator<<(std::ostream& os, const xchar& xc)
-        {
-            os << xc.data.get();
-            return os;
-        }
-        friend std::istream& operator>>(std::istream& is, xchar& xc)
-        {
-            std::string temp;
-            is >> temp;
-            xc.data = std::make_unique<char[]>(temp.length() + 1);
-            xc.charcpy(xc.data.get(), temp.c_str(), xc.size());
-            return is;
-        }
-        size_t get_size(const char* str)
-        {
-            return std::strlen(str);
-        }
-        size_t get_size(std::string_view str)
-        {
-            return str.length();
-        }
-        size_t get_size(char ch)
-        {
-            return 1;
-        }
-        size_t get_size(int i)
-        {
-            std::stringstream ss;
-            ss << i;
-            return ss.str().length();
-        }
-        const char* get() const
-        {
-            return data.get();
-        }
-        // returns the maximum number of characters the xchar can hold
-        size_t max_size() const { return std::numeric_limits<size_t>::max(); }
-        // resizes the xchar to the given size, adding null characters if necessary
-        void resize(size_t new_size)
-        {
-            if (new_size > max_size())
-            {
-                throw std::length_error("new size is too large");
-            }
-            auto new_data = std::make_unique<char[]>(new_size + 1);
-            std::memcpy(new_data.get(), data.get(), std::min(new_size, size()));
-            data = std::move(new_data);
-            data[new_size] = '\0';
-        }
+		xchar_iterator& operator--() {
+			--m_ptr;
+			return *this;
+		}
 
-        char* toChar(xchar& xc) {
-            return xc.data.get();
-        }
-        // returns the size of the allocated storage
-        size_t capacity() const { return data.get() ? std::strlen(data.get()) : 0; }
+		xchar_iterator operator--(int) {
+			xchar_iterator temp = *this;
+			--m_ptr;
+			return temp;
+		}
 
+		xchar_iterator& operator+=(difference_type n) {
+			m_ptr += n;
+			return *this;
+		}
 
-        // requests the xchar to reduce its capacity to fit its size
-        void shrink_to_fit()
-        {
-            resize(size());
-        }
+		xchar_iterator& operator-=(difference_type n) {
+			m_ptr -= n;
+			return *this;
+		}
 
+		xchar_iterator operator+(difference_type n) const {
+			xchar_iterator temp = *this;
+			return temp += n;
+		}
 
-        // clears the contents of the xchar
-        void clear()
-        {
-            data.reset();
-        }
-        void remove(const char* old_part, const char* new_part)
-        {
-            std::string temp(data.get());
-            size_t pos = temp.find(old_part);
-            if (pos != std::string::npos)
-            {
-                temp.replace(pos, std::strlen(old_part), new_part);
-            }
-            data = std::make_unique<char[]>(temp.length() + 1);
-            std::strcpy(data.get(), temp.c_str());
-        }
-        // A function that safely executes a block of code
-        void catcher(void (*func)())
-        {
-            try
-            {
-                func();
-            }
-            catch (const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
-        }
-        template <typename F>
-        F catcher(F(*func)())
-        {
-            try
-            {
-                func();
-            }
-            catch (const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
-        }
-        bool empty() const noexcept {
-            auto array = data.get();
-            if (array == nullptr || array[0] == 0) return true;
-            else return false;
-        }
-        const char* at(size_t index) {
-            if (index >= size()) {
-                throw std::out_of_range("Index out of range");
-            }
-            return data.get() + index;
-        }
-        std::string to_string() {
-            std::string result(data.get());
-            return result;
-        }
-        std::string to_string(std::string_view& view) {
-            return std::string(view.data(), view.size());
-        }
-        std::string to_string() const noexcept{
-            std::string result(data.get());
-            return result;
-        }
-        std::string to_string(std::string&& view)const {
-            return std::string(view.data(), view.size());
-        }
-        size_t charlen(const char** str)
-        {
-            size_t length = 0;
-            while (**str++)
-            {
-                length++;
-            }
-            return length;
-        }
-        size_t charlen(const char* str)
-        {
-            size_t length = 0;
-            while (*str++)
-            {
-                length++;
-            }
-            return length;
-        }
-        char front() const {
-            if (empty()) {
-                throw std::out_of_range("xchar is empty");
-            }
-            return data[0];
-        }
-        void WARNING(size_t newDataSize, size_t reservedMemory) {
-            assert(newDataSize <= reservedMemory && "WARNING: Not enough reserved memory for new data!");
-        }
-        void WARNING(size_t reservedMemory) {
-            auto len = std::strlen(data.get());
-            if (reservedMemory > len) {
-                throw std::out_of_range("WARNING: out of reserved memory");
-            }
-        }
-        char back() const {
-            if (empty())
-                throw std::out_of_range("xchar is empty");
-            return data[std::strlen(data.get()) - 1];
-        }
-        void pop_back() {
-            size_t length = lchar(data.get());
-            if (length == 0) {
-                return;
-            }
-         data[length - 1] = '\0';
-        }
-        void push_back(const xchar& other) {
-            insert(std::strlen(data.get()), other);
-        }
-        xchar& operator+=(const xchar& other) {
-            push_back(other);
-            return *this;
-        }
-        void erase(size_t pos, size_t len) {
-            auto pos_newdata = data.get()[pos];
-            WARNING(pos_newdata, len);
-            if (pos > std::strlen(data.get())) {
-                return;
-            }
-            std::unique_ptr<char[]> new_data(new char[std::strlen(data.get()) - len + 1]);
-            std::strncpy(new_data.get(), data.get(), pos);
-            std::strcpy(new_data.get() + pos, data.get() + pos + len);
-            data = std::move(new_data);
-        }
-        const char& at(size_t pos) const {
-            if (pos >= size()) {
-                throw std::out_of_range("Index out of range");
-            }
-            return data[pos];
-        }
+		xchar_iterator operator-(difference_type n) const {
+			xchar_iterator temp = *this;
+			return temp -= n;
+		}
 
-        char& operator[](size_t pos) {
-            return data[pos];
-        }
+		difference_type operator-(const xchar_iterator& other) const {
+			return m_ptr - other.m_ptr;
+		}
 
-        const char& operator[](size_t pos) const {
-            return data[pos];
-        }
-        void insert(size_t pos, const xchar& other) {
-            auto pos_newdata = data.get()[pos];
-            auto len = get_size(pos_newdata);
-            WARNING(pos_newdata, len);
-            if (pos > std::strlen(data.get())) {
-                return;
-            }
-            std::unique_ptr<char[]> new_data(new char[std::strlen(data.get()) + std::strlen(other.data.get()) + 1]);
-            std::strncpy(new_data.get(), data.get(), pos);
-            std::strcpy(new_data.get() + pos, other.data.get());
-            std::strcpy(new_data.get() + pos + std::strlen(other.data.get()), data.get() + pos);
-            data = std::move(new_data);
-        }
-        void reserve(size_t new_capacity) {
-            WARNING(new_capacity);
-            if (new_capacity > capacity()) {
-                auto new_data = std::make_unique<char[]>(new_capacity);
-                size_t len = std::strlen(data.get());
-                xmemcpy(new_data.get(), data.get(), len, new_capacity);
-                data = std::move(new_data);
-            }
-        
-        }
-        bool starts_with(const char* prefix) const noexcept {
-            size_t prefix_len = std::strlen(prefix);
-            if (std::strncmp(data.get(), prefix, prefix_len) == 0) {
-                return true;
-            }
-            return false;
-        }
-        bool ends_with(const char* suffix) const noexcept {
-            size_t suffix_len = std::strlen(suffix);
-            size_t data_len = std::strlen(data.get());
-            if (data_len < suffix_len) {
-                return false;
-            }
-            if (std::strncmp(data.get() + data_len - suffix_len, suffix, suffix_len) == 0) {
-                return true;
-            }
-            return false;
-        }
-        int compare(const xchar& other)const noexcept {
-            return std::strcmp(data.get(), other.data.get());
-        }
-        bool contains(const char* str) const noexcept {
-            const char* found = std::strstr(data.get(), str);
-            if (found != nullptr) {
-                return true;
-            }
-            return false;
-        }
-        size_t copy(char* dest, size_t count, size_t pos = 0) const {
-            size_t data_len = std::strlen(data.get());
+		bool operator==(const xchar_iterator& other) const {
+			return m_ptr == other.m_ptr;
+		}
+
+		bool operator!=(const xchar_iterator& other) const {
+			return !(*this == other);
+		}
+
+		bool operator<(const xchar_iterator& other) const {
+			return m_ptr < other.m_ptr;
+		}
+
+		bool operator>(const xchar_iterator& other) const {
+			return other < *this;
+		}
+
+		bool operator<=(const xchar_iterator& other) const {
+			return !(other < *this);
+		}
+
+		bool operator>=(const xchar_iterator& other) const {
+			return !(*this < other);
+		}
+
+		reference operator[](difference_type n) const {
+			return *(m_ptr + n);
+		}
+
+	private:
+		pointer m_ptr;
+	};// end of iterator class
+	xchar_iterator begin() {
+		return xchar_iterator(data);
+	}
+
+	xchar_iterator end() {
+		return xchar_iterator(data + charlen(data));
+	}
+	xchar() : data(nullptr), m_capacity(0) {}
+    xchar(const char* ch) : m_capacity(charlen(ch) + 1) {
+        for(int i = 0; i < m_capacity;++i){
+            xmemcpy(data,(char*)ch[i],m_capacity,capacity()*2);
+
+        }     
+    }
+    xchar(std::string& str) : m_capacity(str.length() + 1) {
+        data = new char[m_capacity];
+         memmove(data, str.data(), m_capacity);
+    }
+
+    xchar(int i) {
+        std::string str = std::to_string(i);
+        m_capacity = str.length() + 1;
+        data = new char[m_capacity];
+        memmove(data, str.c_str(), m_capacity);
+    }
+
+    xchar(char& ch) : m_capacity(2) {
+        data = new char[m_capacity];
+        data[0] =ch;
+        data[1] = '\0';
+    }
+
+    xchar(const xchar& other) : m_capacity(other.m_capacity) {
+        data = new char[m_capacity];
+        xmemcpy(data, other.data, other.m_capacity,capacity()*2);
+    }
+
+    xchar(xchar&& other) : data(other.data), m_capacity(other.m_capacity) {
+        other.data = nullptr;
+        other.m_capacity = 0;
+    }
+
+    ~xchar() {
+        delete[] data;
+    }
+    size_t copy(char* dest, size_t count, size_t pos = 0) const {
+            size_t data_len = std::strlen(data);
             if (pos > data_len) {
                 return 0;
             }
             size_t len = std::min(data_len - pos, count);
-            charcpy(dest, data.get() + pos, len);
+            charcpy(dest, data + pos, len);
             return len;
         }
-        size_t find(const char* str, size_t pos = 0) const {
-            const char* found = std::strstr(data.get() + pos, str);
-            if (found) {
-                return found - data.get();
-            }
-            return npos;
+    size_t capacity() const {
+        return m_capacity;
+    }
+
+    const char* get() const {
+        return data;
+    }
+
+    size_t charlen(const char* str) {
+        size_t length = 0;
+        while (*str++) {
+            length++;
         }
-        size_t rfind(const char* str, size_t pos = npos) const {
-            if (pos == npos) {
-                pos = std::strlen(data.get()) - 1;
-            }
-            for (size_t i = pos; i != npos; i--) {
-                if (std::strncmp(data.get() + i, str, std::strlen(str)) == 0) {
-                    return i;
-                }
-            }
-            return npos;
-        }
-        size_t find_first_of(const char* str, size_t pos = 0) const {
-            const char* found = std::strpbrk(data.get() + pos, str);
-            if (found) {
-                return found - data.get();
-            }
-            return npos;
-        }
-        size_t find_first_not_of(const char* str) const {
-            size_t i = 0;
-            while (i < std::strlen(data.get()) && std::strchr(str, data.get()[i])) {
-                i++;
-            }
-            return i;
-        }
-        size_t find_last_not_of(const char* str) const {
-            size_t i = std::strlen(data.get());
-            while (i > 0 && std::strchr(str, data.get()[i - 1])) {
-                i--;
-            }
-            return i;
-        }
-        void swap(xchar& other) {
+        return length;
+    }
+    void swap(xchar& other) {
             std::swap(data, other.data);
         }
-        void resize_and_overwrite(size_t new_size, char new_value) {
-            if (new_size <= 0) {
-                throw std::invalid_argument("new_size must be greater than 0");
+    void reserve(size_t new_capacity) {
+            if (new_capacity > m_capacity) {
+                char* new_data(new char[new_capacity]);
+                std::memcpy(new_data, data,capacity()*2);
+                data = std::move(new_data);
+                m_capacity = new_capacity;
             }
-            std::unique_ptr<char[]> new_data = std::make_unique<char[]>(new_size);
-            for (size_t i = 0; i < new_size; i++) {
-                new_data[i] = new_value;
-            }
-            size_t copy_size = std::min(new_size, std::strlen(data.get()));
-            xmemcpy(new_data.get(), data.get(), copy_size, new_size);
-            data = std::move(new_data);
         }
-        size_t size() const { return data.get() ? std::strlen(data.get()) : 0; }
-    private:
-        std::unique_ptr<char[]> data;
-        static constexpr size_t npos = std::numeric_limits<size_t>::max();
-        std::stringstream ss;
-        void xmemcpy(void* dest, const void* src, size_t n, size_t dest_size)
+private:
+    char* data;
+    size_t m_capacity;
+    static constexpr size_t npos = std::numeric_limits<size_t>::max();
+  void xmemcpy(void* dest, const void* src, size_t n, size_t dest_size)
         {
             if (!dest || !src)
                 throw std::invalid_argument("dest and src pointers must not be null");
@@ -527,14 +220,15 @@ namespace core
 
 
         }
-    };// end of the xchar class
-    // THIS CLASS IS NOT SAME AS STD::STRING_VIEW 
-    // ONLY SERVE FOR NOT COPY NOR MOVE OBJECTS 
+    };
+}// namespace core
+namespace LV {
     class xchar_view {
+        using xchar = core::xchar;
     public:
         xchar_view(const xchar& str): data_(str.get()), length_(str.size()) {}
         xchar_view(const char* str): data_(str), length_(std::strlen(str)) {}
-
+        const char* get() { return data_; }
         void remove_prefix(size_t n) {
             data_ += n;
             length_ -= n;
@@ -557,6 +251,6 @@ namespace core
     private:
         const char* data_;
         size_t length_;
-    };
-};// namespace core
+    };// end for xchar_view
+}
 #endif
